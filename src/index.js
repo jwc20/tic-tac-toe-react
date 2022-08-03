@@ -58,7 +58,8 @@ class Game extends React.Component {
   }
 
   handleClick(i) {
-    const history = this.state.history;
+    // const history = this.state.history;
+    const history = this.state.history.slice(0, this.state.stepNumber + 1); // This ensures that when we go back in time and make a new move, we throw away all the moves from that point.
     const current = history[history.length - 1];
     const squares = current.squares.slice();
     if (calculateWinner(squares) || squares[i]) {
@@ -72,6 +73,7 @@ class Game extends React.Component {
           squares: squares,
         },
       ]),
+      stepNumber: history.length,
       xIsNext: !this.state.xIsNext,
     });
   }
@@ -85,7 +87,8 @@ class Game extends React.Component {
 
   render() {
     const history = this.state.history;
-    const current = history[history.length - 1];
+    // const current = history[history.length - 1];
+    const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
 
     const moves = history.map((step, move) => {
