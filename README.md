@@ -2,6 +2,7 @@
 
 - [ ] refactor to use modern useState, useEffect, etc
 - [ ] implement ipfs
+  - used ipfs to host and used Pinata Cloud pinning service to persist data.
 
 ### Extra Challenges:
 
