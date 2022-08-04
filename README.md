@@ -3,6 +3,7 @@
 - [ ] refactor to use modern useState, useEffect, etc
 - [ ] implement ipfs
   - used ipfs to host and used Pinata Cloud pinning service to persist data.
+    - cannot host to ipfs with wifi firewall
 
 ### Extra Challenges:
 
