@@ -4,6 +4,7 @@
 - [ ] implement ipfs
   - used ipfs to host and used Pinata Cloud pinning service to persist data.
     - cannot host to ipfs with wifi firewall
+  - https://cloudflare-ipfs.com/ipfs/Qmam8ordSi1xcmmHP1VoX1dm4jUHL7Nbor9XwNpY94FeHz/
 
 ### Extra Challenges:
 
