@@ -3,8 +3,8 @@
 - [ ] refactor to use modern useState, useEffect, etc
 - [ ] implement ipfs
   - used ipfs to host and used Pinata Cloud pinning service to persist data.
-    - cannot host to ipfs with wifi firewall
-  - https://cloudflare-ipfs.com/ipfs/Qmam8ordSi1xcmmHP1VoX1dm4jUHL7Nbor9XwNpY94FeHz/
+  - https://gateway.pinata.cloud/ipfs/Qmam8ordSi1xcmmHP1VoX1dm4jUHL7Nbor9XwNpY94FeHz/
+  - https://medium.com/pinata/how-to-easily-host-a-website-on-ipfs-9d842b5d6a01
 
 ### Extra Challenges:
 
