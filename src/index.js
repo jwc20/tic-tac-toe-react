@@ -156,10 +156,14 @@ class Game extends React.Component {
     });
 
     let status;
-    if (winner) {
-      status = "Winner: " + winner;
+    if (winner != null) {
+      if (winner === 'draw') {
+        status = 'Game is a draw';
+      } else {
+        status = 'Winner: ' + winner;
+      }
     } else {
-      status = "Next player: " + (this.state.xIsNext ? "X" : "O");
+      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
     }
 
     let connStatus = this.state.connState;
@@ -206,7 +210,17 @@ function calculateWinner(squares) {
       return squares[a];
     }
   }
-  return null;
+  let filledSquares = 0;
+  for (let i = 0; i < squares.length; i++) {
+    if (squares[i]) {
+      filledSquares++;
+    }
+  }
+  if (filledSquares === squares.length) {
+    return "draw";
+  } else {
+    return null;
+  }
 }
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
