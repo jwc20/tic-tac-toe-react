@@ -3,8 +3,6 @@ import ReactDOM from "react-dom/client";
 import Peer from "peerjs";
 import "./index.css";
 
-
-
 function Square(props) {
   return (
     <button className="square" onClick={props.onClick}>
@@ -73,14 +71,16 @@ class Game extends React.Component {
     });
     this.state.peer.on("connection", (conn) => {
       console.log("got connection from ", conn.peer);
-      this.setState({ conn: conn, connState: states.PLAYER_O });
-      conn.on("data", (data) => {
-        console.log("Received", data);
-        if (this.state.xIsNext) {
-          // handle X press
-          this.handleFakeClick(Number(data));
-        }
-      });
+      if (this.state.conn == null) {
+        this.setState({ conn: conn, connState: states.PLAYER_O });
+        conn.on("data", (data) => {
+          console.log("Received", data);
+          if (this.state.xIsNext) {
+            // handle X press
+            this.handleFakeClick(Number(data));
+          }
+        });
+      }
     });
   }
 
@@ -89,10 +89,9 @@ class Game extends React.Component {
     console.log("connect to ", rp);
     let conn = this.state.peer.connect(rp);
     this.setState({ conn: conn });
-      this.setState({ conn: conn, connState: states.PLAYER_X });
+    this.setState({ conn: conn, connState: states.PLAYER_X });
     conn.on("open", () => {
       console.log("connection open");
-      // conn.send("test");
     });
     conn.on("data", (data) => {
       console.log("Received back ", data);
@@ -162,7 +161,7 @@ class Game extends React.Component {
     } else {
       status = "Next player: " + (this.state.xIsNext ? "X" : "O");
     }
-    
+
     let connStatus = this.state.connState;
 
     return (
