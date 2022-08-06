@@ -71,13 +71,29 @@ class Game extends React.Component {
       this.setState({ peer_id: id });
     });
     this.state.peer.on("connection", (conn) => {
-      conn.on("open", () => {
-        conn.on("data", (data) => {
-          console.log("Received ", data);
-        });
-        conn.send("test");
-        this.setState({ conn: conn });
+      console.log("got connection from ", conn.peer);
+      this.setState({ conn: conn });
+      conn.on("data", (data) => {
+        console.log("Received", data);
+        if (this.state.xIsNext) {
+          // handle X press
+          this.handleClick(i)
+        }
       });
+    });
+  }
+
+  connect() {
+    let rp = document.getElementById("remotepeer").value;
+    console.log("connect to ", rp);
+    let conn = this.state.peer.connect(rp);
+    this.setState({ conn: conn });
+    conn.on("open", () => {
+      console.log("connection open");
+      // conn.send("test");
+    });
+    conn.on("data", (data) => {
+      console.log("Received back ", data);
     });
   }
 
@@ -111,7 +127,6 @@ class Game extends React.Component {
 
   render() {
     const history = this.state.history;
-    // const current = history[history.length - 1];
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
 
@@ -132,18 +147,22 @@ class Game extends React.Component {
     }
 
     return (
-      <div className="game">
-        <div className="game-board">
-          <Board
-            squares={current.squares}
-            onClick={(i) => this.handleClick(i)}
-          />
+      <div>
+        <div className="game">
+          <div className="game-board">
+            <Board
+              squares={current.squares}
+              onClick={(i) => this.handleClick(i)}
+            />
+          </div>
+          <div className="game-info">
+            <div>{status}</div>
+            <ol>{moves}</ol>
+          </div>
         </div>
-        <div className="game-info">
-          <div>my peer id is: {this.state.peer_id}</div>
-          <div>{status}</div>
-          <ol>{moves}</ol>
-        </div>
+        <div>my peer id is: {this.state.peer_id}</div>
+        <input type="text" placeholder="remote peer id" id="remotepeer" />
+        <input type="submit" value="connect" onClick={() => this.connect()} />
       </div>
     );
   }
