@@ -3,6 +3,8 @@ import ReactDOM from "react-dom/client";
 import Peer from "peerjs";
 import "./index.css";
 
+
+
 function Square(props) {
   return (
     <button className="square" onClick={props.onClick}>
@@ -44,6 +46,12 @@ class Board extends React.Component {
   }
 }
 
+const states = {
+  NOT_CONNECTED: "not_connected",
+  PLAYER_X: "player_x",
+  PLAYER_O: "player_o",
+};
+
 class Game extends React.Component {
   constructor(props) {
     super(props);
@@ -58,18 +66,19 @@ class Game extends React.Component {
       peer: new Peer(),
       peer_id: null,
       conn: null,
+      connState: states.NOT_CONNECTED,
     };
     this.state.peer.on("open", (id) => {
       this.setState({ peer_id: id });
     });
     this.state.peer.on("connection", (conn) => {
       console.log("got connection from ", conn.peer);
-      this.setState({ conn: conn });
+      this.setState({ conn: conn, connState: states.PLAYER_O });
       conn.on("data", (data) => {
         console.log("Received", data);
         if (this.state.xIsNext) {
           // handle X press
-          this.handleClick(Number(data));
+          this.handleFakeClick(Number(data));
         }
       });
     });
@@ -80,6 +89,7 @@ class Game extends React.Component {
     console.log("connect to ", rp);
     let conn = this.state.peer.connect(rp);
     this.setState({ conn: conn });
+      this.setState({ conn: conn, connState: states.PLAYER_X });
     conn.on("open", () => {
       console.log("connection open");
       // conn.send("test");
@@ -88,12 +98,23 @@ class Game extends React.Component {
       console.log("Received back ", data);
       if (!this.state.xIsNext) {
         // handle O press
-        this.handleClick(Number(data));
+        this.handleFakeClick(Number(data));
       }
     });
   }
 
   handleClick(i) {
+    if (this.state.connState === states.PLAYER_X && this.state.xIsNext) {
+      this.handleFakeClick(i);
+    } else if (
+      this.state.connState === states.PLAYER_O &&
+      !this.state.xIsNext
+    ) {
+      this.handleFakeClick(i);
+    }
+  }
+
+  handleFakeClick(i) {
     const history = this.state.history.slice(0, this.state.stepNumber + 1); // This ensures that when we go back in time and make a new move, we throw away all the moves from that point.
     const current = history[history.length - 1];
     const squares = current.squares.slice();
@@ -141,6 +162,8 @@ class Game extends React.Component {
     } else {
       status = "Next player: " + (this.state.xIsNext ? "X" : "O");
     }
+    
+    let connStatus = this.state.connState;
 
     return (
       <div>
@@ -152,6 +175,7 @@ class Game extends React.Component {
             />
           </div>
           <div className="game-info">
+            <div>{connStatus}</div>
             <div>{status}</div>
             <ol>{moves}</ol>
           </div>
