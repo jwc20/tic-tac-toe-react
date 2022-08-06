@@ -65,9 +65,19 @@ class Game extends React.Component {
       xIsNext: true,
       peer: new Peer(),
       peer_id: null,
+      conn: null,
     };
     this.state.peer.on("open", (id) => {
       this.setState({ peer_id: id });
+    });
+    this.state.peer.on("connection", (conn) => {
+      conn.on("open", () => {
+        conn.on("data", (data) => {
+          console.log("Received ", data);
+        });
+        conn.send("test");
+        this.setState({ conn: conn });
+      });
     });
   }
 
