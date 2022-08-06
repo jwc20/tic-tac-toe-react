@@ -3,12 +3,29 @@ import ReactDOM from "react-dom/client";
 import Peer from "peerjs";
 import "./index.css";
 
+const LOBBY_NAME = "tictactoe-lobby";
+
 function Square(props) {
   return (
     <button className="square" onClick={props.onClick}>
       {props.value}
     </button>
   );
+}
+
+function LobbyList(props) {
+  const friends = props.friends;
+  const listItems = friends.map((number) => (
+    <li
+      onClick={() => {
+        document.getElementById("remotepeer").value = number;
+      }}
+      key={number}
+    >
+      {number}
+    </li>
+  ));
+  return <ul>{listItems}</ul>;
 }
 
 class Board extends React.Component {
@@ -51,6 +68,21 @@ const states = {
 };
 
 class Game extends React.Component {
+  componentDidMount() {
+    let lobby = new Peer(LOBBY_NAME);
+    lobby.on("open", (id) => {
+      console.log("Lobby peer ID is: " + id);
+    });
+
+    lobby.on("connection", (conn) => {
+      console.log("lobby connection ", conn.peer);
+      conn.on("data", (data) => {
+        console.log(data);
+        conn.send(["hello", "world"]);
+      });
+    });
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -65,9 +97,19 @@ class Game extends React.Component {
       peer_id: null,
       conn: null,
       connState: states.NOT_CONNECTED,
+      inLobby: [],
     };
     this.state.peer.on("open", (id) => {
       this.setState({ peer_id: id });
+      let lconn = this.state.peer.connect(LOBBY_NAME);
+      lconn.on("open", (data) => {
+        console.log("connecting to lobby");
+        lconn.send("Query");
+      });
+      lconn.on("data", (data) => {
+        console.log("setting lobby ", data);
+        this.setState({ inLobby: data });
+      });
     });
     this.state.peer.on("connection", (conn) => {
       console.log("got connection from ", conn.peer);
@@ -80,6 +122,9 @@ class Game extends React.Component {
             this.handleFakeClick(Number(data));
           }
         });
+      } else {
+        console.log("already connected");
+        conn.close();
       }
     });
   }
@@ -157,13 +202,13 @@ class Game extends React.Component {
 
     let status;
     if (winner != null) {
-      if (winner === 'draw') {
-        status = 'Game is a draw';
+      if (winner === "draw") {
+        status = "Game is a draw";
       } else {
-        status = 'Winner: ' + winner;
+        status = "Winner: " + winner;
       }
     } else {
-      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+      status = "Next player: " + (this.state.xIsNext ? "X" : "O");
     }
 
     let connStatus = this.state.connState;
@@ -186,6 +231,12 @@ class Game extends React.Component {
         <div>my peer id is: {this.state.peer_id}</div>
         <input type="text" placeholder="remote peer id" id="remotepeer" />
         <input type="submit" value="connect" onClick={() => this.connect()} />
+        <div className="lobby">
+          <h3>Click a user to challenge</h3>
+          <div className="list">
+            <LobbyList friends={this.state.inLobby} />
+          </div>
+        </div>
       </div>
     );
   }
