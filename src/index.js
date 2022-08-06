@@ -3,14 +3,6 @@ import ReactDOM from "react-dom/client";
 import Peer from "peerjs";
 import "./index.css";
 
-/*
-let peer = new Peer();
-let peer_id = null;
-peer.on("open", function (id) {
-  peer_id = id;
-});
-*/
-
 function Square(props) {
   return (
     <button className="square" onClick={props.onClick}>
@@ -77,7 +69,7 @@ class Game extends React.Component {
         console.log("Received", data);
         if (this.state.xIsNext) {
           // handle X press
-          this.handleClick(i)
+          this.handleClick(Number(data));
         }
       });
     });
@@ -94,17 +86,21 @@ class Game extends React.Component {
     });
     conn.on("data", (data) => {
       console.log("Received back ", data);
+      if (!this.state.xIsNext) {
+        // handle O press
+        this.handleClick(Number(data));
+      }
     });
   }
 
   handleClick(i) {
-    // const history = this.state.history;
     const history = this.state.history.slice(0, this.state.stepNumber + 1); // This ensures that when we go back in time and make a new move, we throw away all the moves from that point.
     const current = history[history.length - 1];
     const squares = current.squares.slice();
     if (calculateWinner(squares) || squares[i]) {
       return;
     }
+    this.state.conn.send(i);
     squares[i] = this.state.xIsNext ? "X" : "O";
     this.setState({
       history: history.concat([
