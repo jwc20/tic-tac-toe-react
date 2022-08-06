@@ -69,18 +69,33 @@ const states = {
 
 class Game extends React.Component {
   componentDidMount() {
+    let peers = {};
     let lobby = new Peer(LOBBY_NAME);
     lobby.on("open", (id) => {
       console.log("Lobby peer ID is: " + id);
     });
-
     lobby.on("connection", (conn) => {
-      console.log("lobby connection ", conn.peer);
+      console.log("lobby connection", conn.peer);
       conn.on("data", (data) => {
-        console.log(data);
-        conn.send(["hello", "world"]);
+        if (data === "READY") {
+          peers[conn.peer] = new Date().getTime();
+        }
+        if (data === "QUERY") {
+          conn.send(Object.keys(peers));
+        }
       });
     });
+
+    function expire() {
+      for (var k in peers) {
+        var now = new Date().getTime();
+        if (now - peers[k] > 3000) {
+          delete peers[k];
+        }
+      }
+      window.setTimeout(expire, 1000);
+    }
+    expire();
   }
 
   constructor(props) {
@@ -99,18 +114,27 @@ class Game extends React.Component {
       connState: states.NOT_CONNECTED,
       inLobby: [],
     };
+
     this.state.peer.on("open", (id) => {
       this.setState({ peer_id: id });
-      let lconn = this.state.peer.connect(LOBBY_NAME);
-      lconn.on("open", (data) => {
-        console.log("connecting to lobby");
-        lconn.send("Query");
+      var lconn = this.state.peer.connect(LOBBY_NAME);
+      lconn.on("open", () => {
+        console.log("connected to lobby");
+        var lobby_query = () => {
+          lconn.send("QUERY");
+          if (this.state.connState === states.NOT_CONNECTED) {
+            lconn.send("READY");
+          }
+          window.setTimeout(lobby_query, 1000);
+        };
+        lobby_query();
       });
       lconn.on("data", (data) => {
-        console.log("setting lobby ", data);
+        console.log("setting lobby", data);
         this.setState({ inLobby: data });
       });
     });
+
     this.state.peer.on("connection", (conn) => {
       console.log("got connection from ", conn.peer);
       if (!this.state.conn) {
@@ -231,6 +255,7 @@ class Game extends React.Component {
         <div>my peer id is: {this.state.peer_id}</div>
         <input type="text" placeholder="remote peer id" id="remotepeer" />
         <input type="submit" value="connect" onClick={() => this.connect()} />
+
         <div className="lobby">
           <h3>Click a user to challenge</h3>
           <div className="list">
