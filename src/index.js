@@ -1,6 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import Peer from "peerjs";
 import "./index.css";
+
+/*
+let peer = new Peer();
+let peer_id = null;
+peer.on("open", function (id) {
+  peer_id = id;
+});
+*/
 
 function Square(props) {
   return (
@@ -54,7 +63,12 @@ class Game extends React.Component {
       ],
       stepNumber: 0,
       xIsNext: true,
+      peer: new Peer(),
+      peer_id: null,
     };
+    this.state.peer.on("open", (id) => {
+      this.setState({ peer_id: id });
+    });
   }
 
   handleClick(i) {
@@ -116,6 +130,7 @@ class Game extends React.Component {
           />
         </div>
         <div className="game-info">
+          <div>my peer id is: {this.state.peer_id}</div>
           <div>{status}</div>
           <ol>{moves}</ol>
         </div>
