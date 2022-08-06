@@ -71,7 +71,7 @@ class Game extends React.Component {
     });
     this.state.peer.on("connection", (conn) => {
       console.log("got connection from ", conn.peer);
-      if (this.state.conn == null) {
+      if (!this.state.conn) {
         this.setState({ conn: conn, connState: states.PLAYER_O });
         conn.on("data", (data) => {
           console.log("Received", data);
