@@ -1,5 +1,7 @@
 # tic-tac-toe-react
 
+https://gateway.pinata.cloud/ipfs/QmNsX7S2mNXuPnseUWYSDZfTSckgcx8499E5nGvpTemzyN/
+
 - [ ] refactor to use modern useState, useEffect, etc
 - [x] implement ipfs
   - used ipfs to host and used Pinata Cloud pinning service to persist data.
