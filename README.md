@@ -2,12 +2,15 @@
 
 https://gateway.pinata.cloud/ipfs/QmNsX7S2mNXuPnseUWYSDZfTSckgcx8499E5nGvpTemzyN/
 
-- [ ] refactor to use modern useState, useEffect, etc
+
 - [x] implement ipfs
   - used ipfs to host and used Pinata Cloud pinning service to persist data.
   - https://gateway.pinata.cloud/ipfs/Qmam8ordSi1xcmmHP1VoX1dm4jUHL7Nbor9XwNpY94FeHz/
   - https://medium.com/pinata/how-to-easily-host-a-website-on-ipfs-9d842b5d6a01
   - https://github.com/ipfs/papers/raw/master/ipfs-cap2pfs/ipfs-p2p-file-system.pdf
+
+- [ ] refactor to using hooks (useState, useEffect, useRef, etc)
+- [ ] implement libp2p instead of peerjs
 
 ### Extra Challenges:
 
