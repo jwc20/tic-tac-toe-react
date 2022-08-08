@@ -10,7 +10,7 @@ https://gateway.pinata.cloud/ipfs/QmNsX7S2mNXuPnseUWYSDZfTSckgcx8499E5nGvpTemzyN
   - https://github.com/ipfs/papers/raw/master/ipfs-cap2pfs/ipfs-p2p-file-system.pdf
 
 - refactor to using hooks (useState, useEffect, useRef, etc)
-  - [ ] refactor tic tac toe game
+  - [x] refactor tic tac toe game portion
   - [ ] refactor peerjs code portion
 
 ### Extra Challenges:
