@@ -10,7 +10,6 @@ https://gateway.pinata.cloud/ipfs/QmNsX7S2mNXuPnseUWYSDZfTSckgcx8499E5nGvpTemzyN
   - https://github.com/ipfs/papers/raw/master/ipfs-cap2pfs/ipfs-p2p-file-system.pdf
 
 - [x] refactor to using hooks (useState, useEffect, useRef, etc)
-- [ ] implement libp2p instead of peerjs
 
 ### Extra Challenges:
 
