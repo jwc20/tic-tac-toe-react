@@ -90,13 +90,7 @@ function Game(props) {
       );
     });
 
-    let status;
-
-    if (winner) {
-      status = "Winner: " + winner;
-    } else {
-      status = "Next player: " + (xIsNext ? "X" : "O");
-    }
+    let status = winner ? "Winner: " + winner : "Next player: " + (xIsNext ? "X" : "O")
 
     return [current, moves, status];
   };
