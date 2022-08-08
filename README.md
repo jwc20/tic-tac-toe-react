@@ -9,8 +9,9 @@ https://gateway.pinata.cloud/ipfs/QmNsX7S2mNXuPnseUWYSDZfTSckgcx8499E5nGvpTemzyN
   - https://medium.com/pinata/how-to-easily-host-a-website-on-ipfs-9d842b5d6a01
   - https://github.com/ipfs/papers/raw/master/ipfs-cap2pfs/ipfs-p2p-file-system.pdf
 
-- [ ] refactor to using hooks (useState, useEffect, useRef, etc)
-- [ ] implement libp2p instead of peerjs
+- refactor to using hooks (useState, useEffect, useRef, etc)
+  - [ ] refactor tic tac toe game
+  - [ ] refactor peerjs code portion
 
 ### Extra Challenges:
 
